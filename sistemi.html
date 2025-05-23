@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progetto di Sistemi</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .section {
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .content {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
+            color: white;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        #section1 h2 {
+            color: #2196F3;
+        }
+
+        #section2 h2 {
+            color: #F44336;
+        }
+
+        #section3 h2 {
+            color: #9C27B0;
+        }
+
+        #section4 h2 {
+            color: #FF9800;
+        }
+
+        #section5 h2 {
+            color: #00BCD4;
+        }
+        #section6 h2 {
+            color: #FF5722;
+        }
+        #section7 h2 {
+            color: #673AB7;
+        }
+        #section8 h2 {
+            color: #3F51B5;
+        }
+        #section9 h2 {
+            color: #009688;
+        }
+    </style>
+</head>
+
+<body>
+    <section id="section1" class="section">
+        <div class="content">
+            <h2>Lettura e scrittura file immagini</h2>
+            <pre style="color: white; font-family: monospace;">
+import cv2
+image = cv2.imread('path/to/image.jpg')
+cv2.imshow('Image', image)
+cv2.waitKey(0)
+cv2.imwrite('output.png', image)</pre>
+        </div>
+    </section>
+
+    <section id="section2" class="section">
+        <div class="content">
+            <h2>Mainpolazione pixel</h2>
+            <pre style="color: white; font-family: monospace;">
+import cv2
+image = cv2.imread('path/to/image.jpg')
+(h, w) = image.shape[:2]
+(b, g, r) = image[0, 0]
+print(f"Pixel at (0, 0) - Red: %d, Green: %d, Blue: %d" % (r, g, b))
+cv2.imshow('Image', image)
+cv2.waitKey(0)
+#cambiare colore al pixel
+image[0, 0] = (0, 0, 255)
+(b, g, r) = image[0, 0]
+print(f"Pixel at (0, 0) - Red: %d, Green: %d, Blue: %d" % (r, g, b))
+cv2.imshow('Modified Image', image)
+cv2.waitKey(0)
+#tagliare l'angolo in alto a sinistra
+(cX, cY) = (w // 2, h // 3)
+t1 = image[0:cY, 0:cX]
+cv2.imshow('Top Left', t1)
+cv2.waitKey(0)
+#colorare un'area
+image[0:cY, 0:cX] = (0, 255, 0)
+cv2.imshow('Top Left Green', image)
+cv2.waitKey(0)
+</pre>
+        </div>
+    </section>
+
+    <section id="section3" class="section">
+        <div class="content">
+            <h2>Disegnare linea, cerchio e rettangolo</h2>
+            <pre style="color: white; font-family: monospace;">
+import cv2
+import numpy as np
+#inizializza un immagine di 300x300 3 canali
+canvas = np.zeros((300, 300, 3), dtype="uint8")
+green = (0, 255, 0)
+#disegna una linea
+cv2.line(canvas, (0, 0), (300, 300), green)
+cv2.imshow('Line', canvas)
+cv2.waitKey(0)
+#linea con spessore
+red = (0, 0, 255)
+cv2.line(canvas, (0, 300), (300, 0), red, 3)
+cv2.imshow('Line with Thickness', canvas)
+cv2.waitKey(0)
+#disegna rettangolo da 10-10 a 100-100
+cv2.rectangle(canvas, (10, 10), (100, 100), green)
+cv2.imshow('Rectangle', canvas)
+cv2.waitKey(0)
+#rettangolo con tick(spessore)
+cv2.rectangle(canvas, (50, 200), (200, 225), red, 5)
+cv2.imshow('Rectangle with Thickness', canvas)
+cv2.waitKey(0)
+#rettangolo tutto blu
+blue = (255, 0, 0)
+cv2.rectangle(canvas, (200, 50), (255, 125), blue, -1)
+cv2.imshow('Filled Rectangle', canvas)
+cv2.waitKey(0)
+#resetta tutto
+canvas = np.zeros((300, 300, 3), dtype="uint8")
+#disegna un cerchio
+(centroX, centroY) = (canvas.shape[1] // 2, canvas.shape[0] // 2)
+white = (255, 255, 255)
+for r in range(0, 175, 25):
+    cv2.circle(canvas, (centroX, centroY), r, white)
+cv2.imshow('Circles', canvas)
+cv2.waitKey(0)
+</pre>
+        </div>
+    </section>
+
+    <section id="section4" class="section">
+        <div class="content">
+            <h2>Shift rotation flip resize</h2>
+            <pre style="color: white; font-family: monospace;">
+import cv2
+import numpy as np
+import imutils
+image = cv2.imread('path/to/image.jpg')
+#shift
+shifted = imutils.translate(image, 0, 100)
+cv2.imshow('Shifted Down', shifted)
+cv2.waitKey(0)
+#rotazione
+rotated = imutils.rotate(image, 180)
+cv2.imshow('Rotated 180 Degrees', rotated)
+cv2.waitKey(0)
+#flip orizzontale
+flipped = cv2.flip(image, 1)
+cv2.imshow('Flipped Horizontally', flipped)
+cv2.waitKey(0)
+flip verticale
+flipped = cv2.flip(image, 0)
+cv2.imshow('Flipped Vertically', flipped)
+cv2.waitKey(0)
+#flip su entrambi gli assi
+flipped = cv2.flip(image, -1)
+cv2.imshow('Flipped Both', flipped)
+cv2.waitKey(0)
+#resize
+metodi = [
+    ("cv2.INTER_NEAREST": cv2.INTER_NEAREST),
+    ("cv2.INTER_LINEAR": cv2.INTER_LINEAR),
+    ("cv2.INTER_CUBIC": cv2.INTER_CUBIC),
+    ("cv2.INTER_AREA": cv2.INTER_AREA),
+    ("cv2.INTER_LANCZOS4": cv2.INTER_LANCZOS4)]
+for (name, method) in metodi:
+    resized = imutils.resize(image, width=image.shape[1] * 3, inter=method)
+    cv2.imshow("Metodo: ()".format(name), resized)
+    cv2.waitKey(0)
+</pre>
+        </div>
+    </section>
+
+    <section id="section5" class="section">
+        <div class="content">
+            <h2>SOmma e sottrazione di pixel (aumentare o diminuire luminosità)</h2>
+            <pre style="color: white; font-family: monospace;">
+import cv2
+import numpy as np
+image = cv2.imread('path/to/image.jpg')
+cv2.imshow('Image', image)
+cv2.waitKey(0)
+#somma
+M = np.ones(image.shape, dtype="uint8") * 100
+added = cv2.add(image, M)
+cv2.imshow('Più luminosa', added)
+cv2.waitKey(0)
+#sottrazione
+M = np.ones(image.shape, dtype="uint8") * 50
+subtracted = cv2.subtract(image, M)
+cv2.imshow('Meno luminosa', subtracted)
+cv2.waitKey(0)
+#sottrazione con maschera
+mask = np.zeros(image.shape, dtype="uint8")
+mask[100:200, 100:200] = (255, 255, 255)
+masked = cv2.subtract(image, mask)
+cv2.imshow('Masked Subtraction', masked)
+cv2.waitKey(0)
+#somma con maschera
+mask = np.zeros(image.shape, dtype="uint8")
+mask[100:200, 100:200] = (255, 255, 255)
+masked = cv2.add(image, mask)
+cv2.imshow('Masked Addition', masked)
+cv2.waitKey(0)
+#somma con maschera e soglia
+mask = np.zeros(image.shape, dtype="uint8")
+mask[100:200, 100:200] = (255, 255, 255)
+masked = cv2.add(image, mask)
+cv2.imshow('Masked Addition with Threshold', masked)
+cv2.waitKey(0)
+#sottrazione con maschera e soglia
+mask = np.zeros(image.shape, dtype="uint8")
+mask[100:200, 100:200] = (255, 255, 255)
+masked = cv2.subtract(image, mask)
+cv2.imshow('Masked Subtraction with Threshold', masked)
+cv2.waitKey(0)
+</pre>
+        </div>
+    </section>
+
+    <section id="section6" class="section">
+        <div class="content">
+            <h2>Operazioni sui bit tra immagini (and, or, xor, not)</h2>
+            <pre style="color: white; font-family: monospace;">
+import cv2
+import numpy as np
+rettangolo = np.zeros((300, 300), dtype="uint8")
+cv2.rectangle(rettangolo, (25, 25), (275, 275), 255, -1)
+cv2.imshow('Rectangle', rettangolo)
+cerchio = np.zeros((300, 300), dtype="uint8")
+cv2.circle(cerchio, (150, 150), 150, 255, -1)
+cv2.imshow('Circle', cerchio)
+cv2.waitKey(0)
+#and
+and_result = cv2.bitwise_and(cerchio, rettangolo)
+cv2.imshow('AND', and_result)
+cv2.waitKey(0)
+#or
+or_result = cv2.bitwise_or(cerchio, rettangolo)
+cv2.imshow('OR', or_result)
+cv2.waitKey(0)
+#xor
+xor_result = cv2.bitwise_xor(cerhio, rettangolo)
+cv2.imshow('XOR', xor_result)
+cv2.waitKey(0)
+#not
+not_result = cv2.bitwise_not(cerchio)
+cv2.imshow('NOT', not_result)
+cv2.waitKey(0)
+#not su rettangolo
+not_result = cv2.bitwise_not(rettangolo)
+cv2.imshow('NOT Rectangle', not_result)
+cv2.waitKey(0)
+</pre>
+        </div>
+    </section>
+
+    <section id="section7" class="section">
+        <div class="content">
+            <h2>Mascheratura immagini</h2>
+            <pre style="color: white; font-family: monospace;">
+import cv2
+import numpy as np
+import argparse
+#tagliare regione di interesse
+image = cv2.imread('path/to/image.jpg')
+ribaltata = cv2.flip(image, 0)
+cv2.imshow('Normale', image)
+cv2.imshow('Flipped Image', ribaltata)
+cv2.waitKey(0)
+#crea maschera rettangolare
+mask = np.zeros(image.shape[:2], dtype="uint8")
+cv2.rectangle(mask, (0, 90), (290, 450), 255, -1)
+cv2.imshow('Mask', mask)
+cv2.waitKey(0)
+masked = cv2.bitwise_and(ribaltata, ribaltata, mask=mask)
+cv2.imshow('Masked Image', masked)
+cv2.waitKey(0)
+for y in range(mask.shape[0]):
+    for x in range(mask.shape[1]):
+        if mask[y, x] == 255:
+            image[y, x] = ribaltata[y, x]
+cv2.imshow('Masked Image with Original', image)
+cv2.waitKey(0)
+#crea maschera circolare
+mask = np.zeros(image.shape[:2], dtype="uint8")
+cv2.circle(mask, (70, 90), 50, 255, -1)
+cv2.imshow('Circle Mask', mask)
+cv2.waitKey(0)
+for y in range(mask.shape[0]):
+    for x in range(mask.shape[1]):
+        if mask[y, x] == 255:
+            image[y, x] = ribaltata[y, x]
+cv2.imshow('Masked Image with Circle', image)
+cv2.waitKey(0)
+        </pre>
+        </div>
+    </section>
+    <section id="section8" class="section">
+        <div class="content">
+            <h2>Trovare i colori nell'immagine</h2>
+            <pre style="color: white; font-family: monospace;">
+import cv2
+import numpy as np
+frame = cv2.imread('path/to/image.jpg')
+hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+lower = np.array([100, 50, 0], np.uint8)
+upper = np.array([140, 255, 255], np.uint8)
+mask = cv2.inRange(hsv, lower, upper)
+res = cv2.bitwise_and(frame, frame, mask=mask)
+cv2.imshow('Original', frame)
+cv2.imshow('Mask', mask)
+cv2.imshow('Result', res)
+cv2.waitKey(0)
+#rosso: 
+lower = np.array([110, 50, 50], np.uint8)
+upper = np.array([130, 255, 255], np.uint8)
+#arancione: 
+lower = np.array([5, 50, 50], np.uint8)
+upper = np.array([15, 255, 255], np.uint8)
+#blu: 
+lower = np.array([100, 150, 0], np.uint8)
+upper = np.array([140, 255, 255], np.uint8)
+#verde:
+lower = np.array([36, 0, 0], np.uint8)
+upper = np.array([85, 255, 255], np.uint8) 
+            </pre>
+        </div>
+    </section>
+    <section id="section9" class="section">
+        <div class="content">
+            <h2>Contorni oggetto</h2>
+            <pre style="color: white; font-family: monospace;">
+import cv2
+import numpy as np
+import imutils
+image = cv2.imread('path/to/image.jpg')
+lower = np.array([36, 0, 0])
+upper = np.array([85, 255, 255], np.uint8)
+hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+mask = cv2.inRange(hsv, lower, upper)
+mask = cv2.erode(mask, None, iterations=15) //erosione
+cv2.imshow('Originale', image)
+cv2.imshow('solo verde', mask)
+#contorni
+contours = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+contours = imutils.grab_contours(contours)
+clone = image.copy()
+cv2.drawContours(clone, contours, -1, (0, 255, 0), 2)
+print("Trovati {} contorni".format(len(contours)))
+print(contorni[0])
+cv2.imshow('Contorni', clone)
+cv2.waitKey(0)
+for c in contorni:
+    M = cv2.moments(c)
+    cX = int(M["m10"] / M["m00"])
+    cY = int(M["m01"] / M["m00"])
+    cv2.drawContours(clone, [c], -1, (0, 255, 0), 2)
+    cv2.circle(clone, (cX, cY), 10, (255, 0, 255), -1)
+    cv2.putText(clone, "centro", (cX - 20, cY - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+    cv2.imshow('Contorni con centro', clone)
+    cv2.waitKey(0)
+    #area e perimetro
+for (i, c) in enumerate(contours):
+        area = cv2.contourArea(c)
+        perimeter = cv2.arcLength(c, True)
+        print("Contorno #{}: Area: {:.2f}, Perimetro: {:.2f}".format(i +1, area, perimeter))
+#scatola di delimitazione
+clone = image.copy()
+for c in contorni:
+    (x, y, w, h) = cv2.boundingRect(c)
+    cv2.rectangle(clone, (x, y), (x + w, y + h), (255, 0, 0), 2)
+    cv2.imshow('Bounding Box', clone)
+    cv2.waitKey(0)
+#routate
+clone = image.copy()
+for c in contorni:
+    box = cv2.minAreaRect(c)
+    box = np.int0(cv2.cv.BoxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box))
+    cv2.drawContours(clone, [box], -1, (0, 255, 0), 2)
+    cv2.imshow('Rotated Bounding Box', clone)
+    cv2.waitKey(0)
+#cerchio 
+clone = image.copy()
+for c in contorni:
+    (x, y), r = cv2.minEnclosingCircle(c)
+    cv2.circle(clone, (int(x)), int(y), int (radius), (0, 255, 0), 2)
+    cv2.imshow('Enclosing Circle', clone)
+    cv2.waitKey(0)
+</html>
