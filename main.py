@@ -1,21 +1,41 @@
 import cv2
 import numpy as np
 
-img = cv2.imread(cv2.samples.findFile("immagini\\new.jpg"))
-hsvFrame = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-green_lower = np.array([25, 52, 72], np.uint8)
-green_upper = np.array([102, 255, 150], np.uint8)
-green_mask = cv2.inRange(hsvFrame, green_lower, green_upper)
-contours, _ = cv2.findContours(green_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-areaContorni=[]
-if contours:
-    for pic, contour in enumerate(contours):
-        area = cv2.contourArea(contour)
-        x, y, w, h = cv2.boundingRect(contour)
-        areaContorni.append(w*h)
-    x, y, w, h = cv2.boundingRect(contours[areaContorni.index(max(areaContorni))])
-    img = cv2.rectangle(img, (x, y),
-                            (x + w, y + h),
-                            (0, 255, 0), 2)
-cv2.imshow("Display window", img)
-k = cv2.waitKey(0)
+def calcola_aree(path_immagine):
+    # Carica e prepara l'immagine
+    image = cv2.imread(path_immagine)
+    if image is None:
+        print("Immagine non trovata. Controlla il percorso.")
+        return
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    edged = cv2.Canny(blurred, 50, 150)
+
+    # Trova i contorni
+    contours, _ = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    print(f"Trovate {len(contours)} forme.")
+
+    output = image.copy()
+    for i, c in enumerate(contours):
+        area = cv2.contourArea(c)
+        if area < 100:
+            continue
+        x, y, w, h = cv2.boundingRect(c)
+        cv2.rectangle(output, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+        # Mostra area sull'immagine
+        text = f"{int(area)} px"
+        cv2.putText(output, text, (x, y - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
+        print(f"Forma #{i + 1}: Area = {area:.2f}")
+
+    # Mostra e salva il risultato
+    cv2.imshow("Forme rilevate con aree", output)
+    cv2.imwrite("output_forme_con_aree.jpg", output)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+# Esegui
+calcola_aree("Sistemi/romano_negro.jpg")
